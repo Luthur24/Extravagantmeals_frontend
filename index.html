@@ -317,7 +317,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 0;m
 
 <!-- PAGE LOADER -->
 <div id="page-loader">
-  <div class="brand">Xtravagant<em style="font-style:italic">Meals</em></div>
+  <div class="brand">Xtravagant<em style="font-style:italic">Meals</em><br>Contact 09014489849 for delivery.</div>
   <div class="loader"></div>
 </div>
 
@@ -534,7 +534,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 0;m
 <!-- SUCCESS PAGE -->
 <!-- ═══════════════════════════════════════════════════════════ -->
 <div class="page" id="page-success">
-  <div class="container flex-center" style="padding:40px 20px;">
+  <div class="container" style="padding:40px 20px;display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 64px);">
     <div class="success-card">
       <div class="success-icon">✓</div>
       <h2 class="success-title">Order Confirmed!</h2>
@@ -880,16 +880,40 @@ function hideLoader() {
 
 // ─── NAVIGATION ──────────────────────────────────────────────
 function navigate(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
+  // Hide ALL pages first
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none'; // Force hide
+  });
+  
+  // Show target page
+  const target = document.getElementById('page-'+page);
+  if (target) {
+    target.style.display = 'block';
+    target.classList.add('active');
+  }
+  
   window.scrollTo(0,0);
+  
+  // Update nav active states
   document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
   const navEl = document.getElementById('nav-'+page);
   if (navEl) navEl.classList.add('active');
 
   if (page === 'menu') loadMenuMeals();
   if (page === 'orders') loadMyOrders();
-  if (page === 'admin') { if (!user?.is_admin) { toast('Admin access only','error'); navigate('home'); return; } loadAdminStats(); loadAdminMeals(); loadAdminOrders(); loadAdminCategories(); loadAdminUsers(); }
+  if (page === 'admin') { 
+    if (!user?.is_admin) { 
+      toast('Admin access only','error'); 
+      navigate('home'); 
+      return; 
+    } 
+    loadAdminStats(); 
+    loadAdminMeals(); 
+    loadAdminOrders(); 
+    loadAdminCategories(); 
+    loadAdminUsers(); 
+  }
   if (page === 'checkout') buildCheckoutSummary();
 }
 
